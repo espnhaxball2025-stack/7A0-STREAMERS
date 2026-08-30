@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Misterioso</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow: hidden; /* Para que las ventanas no hagan scroll y reboten piola */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            user-select: none;
+        }
+
+        /* El contenedor principal con el texto hacker del salame */
+        #intro {
+            text-align: center;
+            z-index: 10;
+        }
+
+        .neon-title {
+            font-size: 10rem;
+            margin: 0;
+            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0, 0 0 80px #0f0;
+        }
+
+        .neon-subtitle {
+            font-size: 3rem;
+            margin-top: -20px;
+            text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 20px #0f0;
+        }
+
+        button {
+            margin-top: 50px;
+            padding: 20px 40px;
+            font-size: 2rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            background: transparent;
+            color: #0f0;
+            border: 3px solid #0f0;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #0f0, inset 0 0 15px #0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 30px #0f0, inset 0 0 30px #0f0;
+            transform: scale(1.1);
+        }
+
+        /* Contenedor donde van a aparecer las 20 "ventanas" rompebolas */
+        #chaos-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Para que no jodan los clicks hasta que aparezcan */
+        }
+
+        /* Las ventanas truchas que rebotan */
+        .fake-window {
+            position: absolute;
+            width: 320px;
+            height: 240px;
+            background: #000;
+            border: 4px solid #0f0;
+            box-shadow: 0 0 20px #0f0;
+            pointer-events: auto; /* Aca si dejamos que hagan click (o sufran) */
+            z-index: 20;
+        }
+
+        .fake-window iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro">
+        <h1 class="neon-title">7A0</h1>
+        <h2 class="neon-subtitle">DE STREAMERS</h2>
+        <button id="jugarBtn">JUGAR AHORA</button>
+    </div>
+
+    <script>
+        const btn = document.getElementById('jugarBtn');
+        const intro = document.getElementById('intro');
+        
+        // El link del video (acordate de poner el tuyo en formato embed)
+        const youtubeEmbedUrl = "[https://www.youtube.com/embed/CAWEl6qioFU]";
+
+        // Magia negra: miramos si la URL de esta ventana tiene "?mode=joda"
+        const urlParams = new URLSearchParams(window.location.search);
+        const isPopup = urlParams.get('mode') === 'joda';
+        const generation = parseInt(urlParams.get('gen')) || 1;
+
+        if (isPopup) {
+            // --- ESTO PASA ADENTRO DE LAS VENTANITAS CHICAS QUE SE ABREN ---
+            
+            // Borramos el texto verde y le mandamos el iframe del video
+            document.body.innerHTML = `<iframe width="100%" height="100%" src="${youtubeEmbedUrl}" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+            document.body.style.margin = '0';
+            document.body.style.overflow = 'hidden';
+
+            // Velocidades de rebote para moverse por el ESCRITORIO de Windows
+            let dx = (Math.random() > 0.5 ? 1 : -1) * (15 + Math.random() * 15);
+            let dy = (Math.random() > 0.5 ? 1 : -1) * (15 + Math.random() * 15);
+
+            // Mover la ventana de verdad por la pantalla
+            setInterval(() => {
+                try {
+                    window.moveBy(dx, dy);
+                    // Si la ventana choca con el borde de tu monitor físico, invierte la dirección
+                    if (window.screenX <= 0 || window.screenX + window.outerWidth >= screen.availWidth) dx *= -1;
+                    if (window.screenY <= 0 || window.screenY + window.outerHeight >= screen.availHeight) dy *= -1;
+                } catch (e) {
+                    // Por si el navegador se pone la gorra y bloquea el moveBy
+                }
+            }, 50);
+
+            // Trampa del Alt+F4
+            window.addEventListener('keydown', (e) => {
+                if (e.altKey && e.key === 'F4') {
+                    // Si es la generacion 1 o 2, abrimos mas (multiplicación). Si es 3, lo dejamos morir.
+                    if (generation < 3) {
+                        for (let i = 0; i < 5; i++) { // Ponemos 5 para no tildarle la PC al 100% de una
+                            let w = 320, h = 240;
+                            let left = Math.floor(Math.random() * (screen.availWidth - w));
+                            let top = Math.floor(Math.random() * (screen.availHeight - h));
+                            
+                            // Abrimos más clones
+                            window.open(window.location.pathname + '?mode=joda&gen=' + (generation + 1), '_blank', `width=${w},height=${h},left=${left},top=${top}`);
+                        }
+                    }
+                }
+            });
+
+        } else {
+            // --- ESTO PASA EN LA PÁGINA PRINCIPAL ORIGINAL ---
+            
+            btn.addEventListener('click', () => {
+                intro.style.display = 'none';
+
+                // IMPORTANTE: Acá es donde el navegador va a pedir permisos para abrir pop-ups.
+                // Si ves que no pasa nada, fijate arriba a la derecha en la barra de direcciones que dice "Pop-ups bloqueados".
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        let w = 320, h = 240;
+                        let left = Math.floor(Math.random() * (screen.availWidth - w));
+                        let top = Math.floor(Math.random() * (screen.availHeight - h));
+                        
+                        // Abrimos pop-ups de VERDAD
+                        window.open(window.location.pathname + '?mode=joda&gen=1', '_blank', `width=${w},height=${h},left=${left},top=${top}`);
+                    }, i * 150); 
+                }
+            });
+        }
+    </script>
+</body>
+</html>
