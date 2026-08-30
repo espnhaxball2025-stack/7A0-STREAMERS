@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7a0 STREAMERS</title>
+    <title>Juego Misterioso</title>
     <style>
         body {
             background-color: #050505;
@@ -154,8 +154,23 @@
             btn.addEventListener('click', () => {
                 intro.style.display = 'none';
 
-                // IMPORTANTE: Le sacamos el timeout. Tiramos las 20 de un saque para cagar al navegador.
-                for (let i = 0; i < 20; i++) {
+                // --- MAGIA NEGRA PARA EL PITIDO INFERNAL ---
+                // Creamos un sonido sintético bien saturado y molesto que no para nunca
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sawtooth'; // Tipo de onda: sierra (bien rasposa y sorda)
+                oscillator.frequency.setValueAtTime(850, audioCtx.currentTime); // Tono agudo "biiiiiii"
+                gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime); // Volumen casi al palo
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start(); // ¡Arranca la tortura!
+                // -------------------------------------------
+
+                // IMPORTANTE: Bajamos a 5 ventanas de una porque sos un cagón y me lloraste.
+                for (let i = 0; i < 5; i++) {
                     let w = 320, h = 240;
                     let left = Math.floor(Math.random() * (screen.availWidth - w));
                     let top = Math.floor(Math.random() * (screen.availHeight - h));
