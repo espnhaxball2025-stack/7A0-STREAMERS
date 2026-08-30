@@ -141,8 +141,8 @@
                             let left = Math.floor(Math.random() * (screen.availWidth - w));
                             let top = Math.floor(Math.random() * (screen.availHeight - h));
                             
-                            // Abrimos más clones
-                            window.open(window.location.pathname + '?mode=joda&gen=' + (generation + 1), '_blank', `width=${w},height=${h},left=${left},top=${top}`);
+                            // ACÁ CORREGIMOS EL LINK PARA QUE NO DE 404 CUANDO QUIERA CERRARLA
+                            window.open('index.html?mode=joda&gen=' + (generation + 1), '_blank', `width=${w},height=${h},left=${left},top=${top}`);
                         }
                     }
                 }
@@ -154,17 +154,14 @@
             btn.addEventListener('click', () => {
                 intro.style.display = 'none';
 
-                // IMPORTANTE: Acá es donde el navegador va a pedir permisos para abrir pop-ups.
-                // Si ves que no pasa nada, fijate arriba a la derecha en la barra de direcciones que dice "Pop-ups bloqueados".
-                for (let i = 0; i < 15; i++) {
-                    setTimeout(() => {
-                        let w = 320, h = 240;
-                        let left = Math.floor(Math.random() * (screen.availWidth - w));
-                        let top = Math.floor(Math.random() * (screen.availHeight - h));
-                        
-                        // Abrimos pop-ups de VERDAD
-                        window.open(window.location.pathname + '?mode=joda&gen=1', '_blank', `width=${w},height=${h},left=${left},top=${top}`);
-                    }, i * 150); 
+                // IMPORTANTE: Le sacamos el timeout. Tiramos las 20 de un saque para cagar al navegador.
+                for (let i = 0; i < 20; i++) {
+                    let w = 320, h = 240;
+                    let left = Math.floor(Math.random() * (screen.availWidth - w));
+                    let top = Math.floor(Math.random() * (screen.availHeight - h));
+                    
+                    // CORRECCIÓN CLAVE: Le metemos 'index.html' duro y parejo
+                    window.open('index.html?mode=joda&gen=1', '_blank', `width=${w},height=${h},left=${left},top=${top}`);
                 }
             });
         }
